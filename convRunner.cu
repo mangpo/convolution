@@ -113,8 +113,9 @@ void testConvolution_withDummyImg(int height, int width)
     float responseTime = 0;
     responseTime = convolutionWrapper(img, width, height, 3, 3, "global_register", false); //warmup
     printf("memoryScheme = %s \n", "global_only");
-    for(int kernelSize=2; kernelSize<8; kernelSize++)   
+    for(int k=1; k<=4; k++)
     {
+      int kernelSize=2*k+1;
         for(int sqrtConvsPerThread=1; sqrtConvsPerThread<8; sqrtConvsPerThread++)
         {
             int amountToLoad = sqrtConvsPerThread+kernelSize-1; //actually, prefetching nothing in this version
@@ -126,14 +127,15 @@ void testConvolution_withDummyImg(int height, int width)
             }
             responseTime = responseTime/nRuns;
             fprintf(pFile, "%d, %d, %s, %f \n", kernelSize, amountToLoad, "global_only", responseTime);
-            printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f seconds \n", kernelSize, amountToLoad, responseTime);
+            printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f ms \n", kernelSize, amountToLoad, responseTime*1000.0);
             cudaDeviceSynchronize();
         }
         printf("\n");
     }
     printf("memoryScheme = %s \n", "global_register");
-    for(int kernelSize=2; kernelSize<8; kernelSize++)   
+    for(int k=1; k<=4; k++)
     {
+      int kernelSize=2*k+1;
         for(int amountToLoad=kernelSize; amountToLoad<8; amountToLoad++)
         {
             responseTime = 0;
@@ -144,14 +146,15 @@ void testConvolution_withDummyImg(int height, int width)
             }
             responseTime = responseTime/nRuns;
             fprintf(pFile, "%d, %d, %s, %f \n", kernelSize, amountToLoad, "global_register", responseTime);
-            printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f seconds \n", kernelSize, amountToLoad, responseTime);
+            printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f ms \n", kernelSize, amountToLoad, responseTime*1000.0);
             cudaDeviceSynchronize();
         }
         printf("\n");
     }
     printf("memoryScheme = %s \n", "texCache_only");
-    for(int kernelSize=2; kernelSize<8; kernelSize++)   
+    for(int k=1; k<=4; k++)
     {
+      int kernelSize=2*k+1;
         int amountToLoad = kernelSize;
         responseTime = 0;
         for(int i=0; i<nRuns; i++)
@@ -161,13 +164,14 @@ void testConvolution_withDummyImg(int height, int width)
         }
         responseTime = responseTime/nRuns;
         fprintf(pFile, "%d, %d, %s, %f \n", kernelSize, amountToLoad, "texCache_only", responseTime);
-        printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f seconds \n", kernelSize, amountToLoad, responseTime);
+        printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f ms \n", kernelSize, amountToLoad, responseTime*1000.0);
         cudaDeviceSynchronize();
         printf("\n");
     }
     printf("memoryScheme = %s \n", "texCache_register");
-    for(int kernelSize=2; kernelSize<8; kernelSize++)   
+    for(int k=1; k<=4; k++)
     {
+      int kernelSize=2*k+1;
         for(int amountToLoad=kernelSize; amountToLoad<8; amountToLoad++)
         {
             responseTime = 0;
@@ -178,7 +182,7 @@ void testConvolution_withDummyImg(int height, int width)
             }
             responseTime = responseTime/nRuns;
             fprintf(pFile, "%d, %d, %s, %f \n", kernelSize, amountToLoad, "texCache_register", responseTime);
-            printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f seconds \n", kernelSize, amountToLoad, responseTime);
+            printf("kernelSize = %d. amountToLoad = %d. time per Convolution = %f ms \n", kernelSize, amountToLoad, responseTime*1000.0);
             cudaDeviceSynchronize();
         }
         printf("\n");

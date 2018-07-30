@@ -28,6 +28,7 @@ int main (int argc,char **argv)
     //testConvolution_withDummyImg(640, 480);
     //testConvolution_withDummyImg(512, 512);
     testConvolution_withDummyImg(9216, 9216); //9216x9216 image, like FairchildImaging CCD595
+    testConvolution_withDummyImg(10000, 10000); //9216x9216 image, like FairchildImaging CCD595
 
     return 0;
 }
